@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using PureCloudPlatform.Client.V2.Model;
-using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,9 +16,6 @@ namespace Assets.Scripts.PureCloud
 {
     public class PureCloud
     {
-        private RestClient client = new RestClient("https://api.mypurecloud.com");
-        private RestClient authClient = new RestClient("https://login.mypurecloud.com");
-
         private string accessToken { get; set; }
 
         public List<User> Users
@@ -50,58 +46,9 @@ namespace Assets.Scripts.PureCloud
 
         private PureCloud()
         {
+            // TODO: is this used anymore?
             ServicePointManager.MaxServicePointIdleTime = 0;
             ServicePointManager.ServerCertificateValidationCallback = MyRemoteCertificateValidationCallback;
-
-            //var auth = System.Convert.ToBase64String(
-            //        System.Text.Encoding.GetEncoding("ISO-8859-1")
-            //          .GetBytes("7de3af06-c0b3-4f9b-af45-72f4a14037cc:1duphi_YtswNjN2GXOg_APY-KKTmnYXvfNj7NnHUhnM")
-            //        );
-            //Debug.Log(auth);
-
-            //Debug.Log("Preparing to log in...");
-            //var authRequest = new RestRequest("oauth/token", Method.POST);
-            //authRequest.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            //authRequest.AddHeader("Authorization", "Basic " + auth);
-            //authRequest.AddParameter("grant_type", "client_credentials");
-
-            //Debug.Log("Logging in...");
-            //var response = authClient.Execute(authRequest);
-
-            //Debug.Log("Auth done");
-            //Debug.Log(response.Content);
-            //Debug.Log(response.ResponseStatus);
-            //Debug.Log(response.Headers);
-            //Debug.Log(response.ErrorMessage);
-            //Debug.Log(response.ErrorException);
-
-            //var authResponse = JsonConvert.DeserializeObject<AuthResponse>(response.Content);
-            //Debug.Log(authResponse);
-            //this.accessToken = authResponse.access_token;
-            //Debug.Log("Access token=" + this.accessToken);
-
-
-
-            //Debug.Log("Getting users...");
-            //var usersRequest = new RestRequest("api/v2/users", Method.POST);
-            //usersRequest.AddHeader("authorization", "bearer " +this.accessToken);
-            //usersRequest.AddHeader("content-type", "application/json");
-            //var response2 = client.Execute(usersRequest);
-
-            //Debug.Log("User list done");
-            //Debug.Log(response2.Content);
-            //Debug.Log(response2.ResponseStatus);
-            //Debug.Log("Response headers: " + response2.Headers.Count);
-            //foreach(var header in response2.Headers)
-            //{
-            //    Debug.Log(header);
-            //}
-            //Debug.Log(response2.ErrorMessage);
-            //Debug.Log(response2.ErrorException);
-
-            //var usersResponse = JsonConvert.DeserializeObject<UserEntityListing>(response2.Content);
-            //Debug.Log(usersResponse);
-            //Debug.Log(JsonConvert.SerializeObject(usersResponse, Formatting.Indented));
             
 
             if (String.IsNullOrEmpty(PureCloudSettings.Instance.Get("authToken")))

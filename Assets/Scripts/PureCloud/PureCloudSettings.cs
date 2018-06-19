@@ -26,7 +26,8 @@ namespace Assets.Scripts.PureCloud
             this.Settings = new Dictionary<string, string>();
 
             Debug.Log("CWD: " + Directory.GetCurrentDirectory());
-            var lines = File.ReadAllLines(Directory.GetCurrentDirectory() + "/local/settings.txt");
+            //var lines = File.ReadAllLines(Directory.GetCurrentDirectory() + "/local/settings.txt");
+            var lines = File.ReadAllLines("d:/git/super-visor-vr/local/settings.txt");
 
             foreach (var line in lines)
             {

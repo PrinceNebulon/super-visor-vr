@@ -11,15 +11,15 @@ public class ButtonTrigger : MonoBehaviour {
     private Transform boxPrefab;
     [SerializeField]
     private Transform spawnPoint;
+    [SerializeField]
+    private int spawnMultiplier = 1;
 
     private PureCloud pureCloud;
+    private int spawnDispersionFactor = 30;
+    private System.Random random = new System.Random();
 
-	// Use this for initialization
-	void Start () {
-        //      var accessTokenInfo = Configuration.Default.ApiClient.PostToken("18a4c365-7ea3-4f0g-9fb7-884fb4d2e9c6",
-        //"M7FfdYQyL5TA6BdbEZ8M9-Wx4uZai1rNQ7jcuFdcJJo");
-        //      Console.WriteLine("Access token=" + accessTokenInfo.AccessToken);
-
+    // Use this for initialization
+    void Start () {
         pureCloud = PureCloud.Instance;
 
         StartCoroutine(pureCloud.GetUsers());
@@ -32,20 +32,30 @@ public class ButtonTrigger : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter");
-        Debug.Log(other.tag);
         if (other.CompareTag("Button"))
         {
-            Transform t = Instantiate(boxPrefab);
-            t.position = spawnPoint.position;
-
-            StartCoroutine(applyFaceTexture(t));
+            for (var i = 0; i < spawnMultiplier; i++)
+            {
+                SpawnUser(GetRandomUserWithPicture());
+            }
         }
+    }
+
+    private void SpawnUser(int id)
+    {
+        Transform t = Instantiate(boxPrefab);
+        //Debug.Log("[OLD] x:" + spawnPoint.position.x + "y:" + spawnPoint.position.y + "z:" + spawnPoint.position.z);
+        t.position = new Vector3(
+            spawnPoint.position.x + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100),
+            spawnPoint.position.y,
+            spawnPoint.position.z + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100.0));
+        //Debug.Log("[NEW] x:" + t.position.x + "y:" + t.position.y + "z:" + t.position.z);
+
+        StartCoroutine(applyFaceTexture(t));
     }
 
     private int GetRandomUserWithPicture()
     {
-        System.Random random = new System.Random();
         var i = -1;
         while (i < 0)
         {
@@ -61,44 +71,13 @@ public class ButtonTrigger : MonoBehaviour {
     IEnumerator applyFaceTexture(Transform t)
     {
         var i = GetRandomUserWithPicture();
-
-        Debug.Log("Getting texture from " + PureCloud.Instance.Users[i].Images[0].ImageUri);
+        
         Texture2D tex = new Texture2D(96, 96, TextureFormat.DXT1, false);
         using (WWW www = new WWW(PureCloud.Instance.Users[i].Images[0].ImageUri))
         {
-            Debug.Log("Before yield");
             yield return www;
-            Debug.Log("Loading into texture");
             www.LoadImageIntoTexture(tex);
-            Debug.Log("Applying to transform");
             t.Find("Face").GetComponent<Renderer>().material.mainTexture = tex;
-            Debug.Log("Done with tex");
-        }
-    }
-
-    IEnumerator applyImageTexture(Transform t)
-    {
-        System.Random random = new System.Random();
-        var i = random.Next(0, PureCloud.Instance.Users.Count - 1);
-
-        if (PureCloud.Instance.Users[i].Images == null || PureCloud.Instance.Users[i].Images.Count == 0)
-        {
-            Debug.LogWarning("No images for " + PureCloud.Instance.Users[i].Name);
-            yield return null;
-        }
-
-        Debug.Log("Getting texture from " + PureCloud.Instance.Users[i].Images[0].ImageUri);
-        Texture2D tex = new Texture2D(96, 96, TextureFormat.DXT1, false);
-        using (WWW www = new WWW(PureCloud.Instance.Users[i].Images[0].ImageUri))
-        {
-            Debug.Log("Before yield");
-            yield return www;
-            Debug.Log("Loading into texture");
-            www.LoadImageIntoTexture(tex);
-            Debug.Log("Applying to transform");
-            t.GetComponent<Renderer>().material = Resources.Load("PhotoShader", typeof(Material)) as Material;
-            t.GetComponent<Renderer>().material.mainTexture = tex;
-            Debug.Log("Done with tex");
         }
     }
 }
