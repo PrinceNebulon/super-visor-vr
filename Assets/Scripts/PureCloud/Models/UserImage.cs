@@ -20,7 +20,7 @@ namespace PureCloudPlatform.Client.V2.Model
     {
         
         
-        
+        public int ResolutionInt { get { return int.Parse(Resolution.Trim(new char[] { 'x' })); } }
         
         
         

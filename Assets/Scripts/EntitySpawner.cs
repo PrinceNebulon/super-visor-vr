@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.PureCloud;
+using PureCloudPlatform.Client.V2.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,8 +55,8 @@ public class EntitySpawner : MonoBehaviour {
         //var color = PresenceColors.FromSystemPresence(user.Presence.PresenceDefinition.SystemPresence);
         //npc.Find("Hair").GetComponent<Renderer>().material.SetColor("_Color", color);
         npc.Find("Hair").GetComponent<Renderer>().material = LoadPresenceMaterial(user.Presence.PresenceDefinition.SystemPresence);
-
-        StartCoroutine(applyFaceTexture(npc, PureCloud.Instance.Users[i].Images[0].ImageUri));
+        
+        StartCoroutine(applyFaceTexture(npc, PureCloud.Instance.Users[i].DefaultImage));
     }
 
     private Material LoadPresenceMaterial(string systemPresence)
@@ -94,10 +95,11 @@ public class EntitySpawner : MonoBehaviour {
         return i;
     }
 
-    IEnumerator applyFaceTexture(Transform t, string uri)
-    {   
-        Texture2D tex = new Texture2D(96, 96, TextureFormat.DXT1, false);
-        using (WWW www = new WWW(uri))
+    IEnumerator applyFaceTexture(Transform t, UserImage image)
+    {
+        Debug.Log("Resolution: " + image.ResolutionInt);
+        Texture2D tex = new Texture2D(image.ResolutionInt, image.ResolutionInt, TextureFormat.DXT1, false);
+        using (WWW www = new WWW(image.ImageUri))
         {
             yield return www;
             www.LoadImageIntoTexture(tex);

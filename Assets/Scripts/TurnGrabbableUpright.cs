@@ -23,7 +23,6 @@ public class TurnGrabbableUpright : MonoBehaviour
             {
                 if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) >= .5)
                 {
-                    Debug.Log("Setting rotation");
                     hit.transform.rotation = new Quaternion(0, 0, 0, 0);
                 }
             }

@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PureCloudPlatform.Client.V2.Client;
+using UnityEngine;
 
 namespace PureCloudPlatform.Client.V2.Model
 {
@@ -23,7 +24,27 @@ namespace PureCloudPlatform.Client.V2.Model
         
         
         
-        
+        public UserImage DefaultImage
+        {
+            get
+            {
+                if (Images == null || Images.Count == 0) return null;
+
+                UserImage image = null;
+                int res = 0;
+
+                foreach(var i in Images)
+                {
+                    if (i.ResolutionInt > res)
+                    {
+                        image = i;
+                        res = i.ResolutionInt;
+                    }
+                }
+
+                return image;
+            }
+        }
         
         
         
