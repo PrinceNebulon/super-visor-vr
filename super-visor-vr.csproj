@@ -536,8 +536,7 @@
     <Compile Include="Assets\OculusPlatform\Scripts\VoipPCMSourceNative.cs" />
     <Compile Include="Assets\OculusPlatform\Scripts\VoipSampleRate.cs" />
     <Compile Include="Assets\OculusPlatform\Scripts\WindowsPlatform.cs" />
-    <Compile Include="Assets\Scripts\ButtonRaycast.cs" />
-    <Compile Include="Assets\Scripts\ButtonTrigger.cs" />
+    <Compile Include="Assets\Scripts\EntitySpawner.cs" />
     <Compile Include="Assets\Scripts\MaterialSwitcher.cs" />
     <Compile Include="Assets\Scripts\PureCloud\AuthResponse.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Iso8601DateTimeConverter.cs" />
@@ -559,6 +558,7 @@
     <Compile Include="Assets\Scripts\PureCloud\PureCloud.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloudSettings.cs" />
     <Compile Include="Assets\Scripts\PureCloud\UpgradeSdkEnumConverter.cs" />
+    <Compile Include="Assets\Scripts\TurnGrabbableUpright.cs" />
     <Compile Include="Assets\Scripts\UiButtonTest.cs" />
   </ItemGroup>
   <ItemGroup>
