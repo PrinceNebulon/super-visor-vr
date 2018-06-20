@@ -304,7 +304,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\BlockyCustomCharacter\DemoAnimationScript.cs" />
-    <Compile Include="Assets\ButtonCollider.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Antialiasing.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\BloomAndFlares.cs" />
@@ -536,6 +535,7 @@
     <Compile Include="Assets\OculusPlatform\Scripts\VoipPCMSourceNative.cs" />
     <Compile Include="Assets\OculusPlatform\Scripts\VoipSampleRate.cs" />
     <Compile Include="Assets\OculusPlatform\Scripts\WindowsPlatform.cs" />
+    <Compile Include="Assets\Scripts\ButtonCollider.cs" />
     <Compile Include="Assets\Scripts\EntitySpawner.cs" />
     <Compile Include="Assets\Scripts\MaterialSwitcher.cs" />
     <Compile Include="Assets\Scripts\PureCloud\AuthResponse.cs" />
@@ -547,6 +547,8 @@
     <Compile Include="Assets\Scripts\PureCloud\Models\LocationDefinition.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\MediaSummary.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\MediaSummaryDetail.cs" />
+    <Compile Include="Assets\Scripts\PureCloud\Models\OrganizationPresence.cs" />
+    <Compile Include="Assets\Scripts\PureCloud\Models\OrganizationPresenceEntityListing.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\OutOfOffice.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\PresenceDefinition.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\RoutingStatus.cs" />
@@ -555,7 +557,9 @@
     <Compile Include="Assets\Scripts\PureCloud\Models\UserEntityListing.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\UserImage.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\UserPresence.cs" />
+    <Compile Include="Assets\Scripts\PureCloud\PresenceColors.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloud.cs" />
+    <Compile Include="Assets\Scripts\PureCloud\PureCloudInitializer.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloudSettings.cs" />
     <Compile Include="Assets\Scripts\PureCloud\UpgradeSdkEnumConverter.cs" />
     <Compile Include="Assets\Scripts\TurnGrabbableUpright.cs" />

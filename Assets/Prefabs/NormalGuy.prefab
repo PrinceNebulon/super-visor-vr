@@ -247,6 +247,7 @@ GameObject:
   - component: {fileID: 54687173453352460}
   - component: {fileID: 65658979827650310}
   - component: {fileID: 114191662720321882}
+  - component: {fileID: 65926291137287894}
   m_Layer: 0
   m_Name: NormalGuy
   m_TagString: Untagged
@@ -1035,8 +1036,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1277163179973496}
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: 0.0662, y: 0.5714, z: 0.0044}
-  m_LocalScale: {x: -0.012539142, y: 1, z: -0.011598616}
+  m_LocalPosition: {x: 0.0655, y: 0.57, z: 0.0049}
+  m_LocalScale: {x: -0.0128, y: 1, z: -0.011598616}
   m_Children: []
   m_Father: {fileID: 4151619048258866}
   m_RootOrder: 28
@@ -1374,6 +1375,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.13, y: 0.63, z: 0.33}
   m_Center: {x: 0, y: 0.325, z: 0}
+--- !u!65 &65926291137287894
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1378538471015364}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.15252057, y: 0.019105352, z: 0.33176038}
+  m_Center: {x: -0.00037172931, y: 0.008890012, z: -0.0008261402}
 --- !u!95 &95044544297630440
 Animator:
   serializedVersion: 3

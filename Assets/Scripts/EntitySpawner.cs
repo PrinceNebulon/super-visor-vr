@@ -17,9 +17,7 @@ public class EntitySpawner : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        pureCloud = PureCloud.Instance;
 
-        StartCoroutine(pureCloud.GetUsers());
     }
 
     // Update is called once per frame
@@ -40,16 +38,46 @@ public class EntitySpawner : MonoBehaviour {
 
     private void SpawnUser(int i)
     {
-        Transform t = Instantiate(boxPrefab);
+        Transform npc = Instantiate(boxPrefab);
         //Debug.Log("[OLD] x:" + spawnPoint.position.x + "y:" + spawnPoint.position.y + "z:" + spawnPoint.position.z);
-        t.position = new Vector3(
+        npc.position = new Vector3(
             spawnPoint.position.x + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100),
             spawnPoint.position.y,
             spawnPoint.position.z + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100.0));
         //Debug.Log("[NEW] x:" + t.position.x + "y:" + t.position.y + "z:" + t.position.z);
-        t.name = PureCloud.Instance.Users[i].Name;
-        Debug.Log(PureCloud.Instance.Users[i].Presence.Id);
-        StartCoroutine(applyFaceTexture(t, i));
+
+        var user = PureCloud.Instance.Users[i];
+        Debug.Log(user.Name + " -> " + PureCloud.Instance.ResolvePresenceId(user.Presence.PresenceDefinition.Id).DefaultLabel);
+
+        npc.name = user.Name;
+
+        //var color = PresenceColors.FromSystemPresence(user.Presence.PresenceDefinition.SystemPresence);
+        //npc.Find("Hair").GetComponent<Renderer>().material.SetColor("_Color", color);
+        npc.Find("Hair").GetComponent<Renderer>().material = LoadPresenceMaterial(user.Presence.PresenceDefinition.SystemPresence);
+
+        StartCoroutine(applyFaceTexture(npc, PureCloud.Instance.Users[i].Images[0].ImageUri));
+    }
+
+    private Material LoadPresenceMaterial(string systemPresence)
+    {
+        switch (systemPresence.ToUpperInvariant())
+        {
+            case "AVAILABLE":
+                return Resources.Load<Material>("Presence Colors/PresenceAvailable");
+            case "AWAY":
+            case "MEAL":
+            case "TRAINING":
+            case "BREAK":
+                return Resources.Load<Material>("Presence Colors/PresenceAway"); ;
+            case "BUSY":
+            case "MEETING":
+                return Resources.Load<Material>("Presence Colors/PresenceBusy"); ;
+            case "IDLE":
+            case "ON_QUEUE":
+                return Resources.Load<Material>("Presence Colors/PresenceOnQueue"); ;
+            default:
+                return Resources.Load<Material>("Presence Colors/PresenceOffline"); ;
+        }
     }
 
     private int GetRandomUserWithPicture()
@@ -66,10 +94,10 @@ public class EntitySpawner : MonoBehaviour {
         return i;
     }
 
-    IEnumerator applyFaceTexture(Transform t, int i)
+    IEnumerator applyFaceTexture(Transform t, string uri)
     {   
         Texture2D tex = new Texture2D(96, 96, TextureFormat.DXT1, false);
-        using (WWW www = new WWW(PureCloud.Instance.Users[i].Images[0].ImageUri))
+        using (WWW www = new WWW(uri))
         {
             yield return www;
             www.LoadImageIntoTexture(tex);

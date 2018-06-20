@@ -18,6 +18,22 @@ namespace Assets.Scripts.PureCloud
     {
         private string accessToken { get; set; }
 
+
+        private static PureCloud _instance;
+        private List<User> _users = new List<User>();
+        private Dictionary<string, OrganizationPresence> _presences = new Dictionary<string, OrganizationPresence>();
+        private OrganizationPresence _offlinePresence;
+
+        public static PureCloud Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new PureCloud();
+
+                return _instance;
+            }
+        }
+
         public List<User> Users
         {
             get
@@ -30,17 +46,15 @@ namespace Assets.Scripts.PureCloud
             }
         }
 
-
-        private static PureCloud _instance;
-        private List<User> _users = new List<User>();
-
-        public static PureCloud Instance
+        public Dictionary<string, OrganizationPresence> Presences
         {
             get
             {
-                if (_instance == null) _instance = new PureCloud();
-
-                return _instance;
+                return _presences;
+            }
+            private set
+            {
+                _presences = value;
             }
         }
 
@@ -49,7 +63,7 @@ namespace Assets.Scripts.PureCloud
             // TODO: is this used anymore?
             ServicePointManager.MaxServicePointIdleTime = 0;
             ServicePointManager.ServerCertificateValidationCallback = MyRemoteCertificateValidationCallback;
-            
+
 
             if (String.IsNullOrEmpty(PureCloudSettings.Instance.Get("authToken")))
             {
@@ -87,19 +101,23 @@ namespace Assets.Scripts.PureCloud
             }
         }
 
-        public IEnumerator GetUsers(int pageNumber = 1)
+        public OrganizationPresence ResolvePresenceId(string id)
         {
-            return GetRequest("https://api.mypurecloud.com/api/v2/users?expand=presence&pageSize=100&pageNumber=" + pageNumber);
+            if (!Presences.ContainsKey(id)) return _offlinePresence;
+            return Presences[id];
         }
 
-        IEnumerator GetRequest(string uri)
+        public IEnumerator LoadUsers(int pageNumber = 1)
         {
+            var uri = "https://api.mypurecloud.com/api/v2/users?expand=presence&pageSize=100&pageNumber=" + pageNumber;
+
             if (this.accessToken == null)
             {
                 Debug.LogWarning("Access token is not set!");
                 yield return null;
             }
-            Debug.Log("Making request");
+
+            Debug.Log("[GET] " + uri);
             var myWebRequest = UnityWebRequest.Get(uri);
             myWebRequest.SetRequestHeader("Authorization", "bearer " + this.accessToken);
             yield return myWebRequest.SendWebRequest();
@@ -109,6 +127,7 @@ namespace Assets.Scripts.PureCloud
             Debug.Log("text=" + myWebRequest.downloadHandler.text);
             Debug.Log("data length=" + myWebRequest.downloadHandler.data.Length);
 
+
             var users = JsonConvert.DeserializeObject<UserEntityListing>(myWebRequest.downloadHandler.text);
             this.Users.AddRange(users.Entities);
             Debug.Log("Got " + users.Entities.Count + " users, total: " + this.Users.Count);
@@ -116,7 +135,58 @@ namespace Assets.Scripts.PureCloud
             if (users.PageNumber < users.PageCount)
             {
                 Debug.Log("Getting more users");
-                yield return GetUsers((int)users.PageNumber + 1);
+                yield return LoadUsers((int)users.PageNumber + 1);
+            }
+            else
+            {
+                foreach (User user in Users)
+                {
+                    Debug.Log("[USER] " + user.Name + " Presence: " + user.Presence);
+                }
+            }
+        }
+
+        public IEnumerator LoadPresences(int pageNumber = 1)
+        {
+            var uri = "https://api.mypurecloud.com/api/v2/presencedefinitions?pageSize=100&pageNumber=" + pageNumber;
+
+            if (this.accessToken == null)
+            {
+                Debug.LogWarning("Access token is not set!");
+                yield return null;
+            }
+
+            Debug.Log("[GET] " + uri);
+            var myWebRequest = UnityWebRequest.Get(uri);
+            myWebRequest.SetRequestHeader("Authorization", "bearer " + this.accessToken);
+            yield return myWebRequest.SendWebRequest();
+
+            Debug.Log("isHttpError=" + myWebRequest.isHttpError);
+            Debug.Log("isNetworkError=" + myWebRequest.isNetworkError);
+            Debug.Log("text=" + myWebRequest.downloadHandler.text);
+            Debug.Log("data length=" + myWebRequest.downloadHandler.data.Length);
+
+
+            var presences = JsonConvert.DeserializeObject<OrganizationPresenceEntityListing>(myWebRequest.downloadHandler.text);
+            foreach (var presence in presences.Entities)
+            {
+                Presences.Add(presence.Id, presence);
+            }
+            Debug.Log("Got " + presences.Entities.Count + " presences, total: " + this.Presences.Count);
+
+            if (presences.PageNumber < presences.PageCount)
+            {
+                Debug.Log("Getting more presences");
+                yield return LoadPresences((int)presences.PageNumber + 1);
+            }
+            else
+            {
+                foreach (var presence in Presences)
+                {
+                    Debug.Log("[PRESENCE] " + presence.Key + " " + presence.Value.DefaultLabel);
+                    if (presence.Value.SystemPresence.ToLowerInvariant() == "offline")
+                        _offlinePresence = presence.Value;
+                }
             }
         }
 
