@@ -51,6 +51,7 @@ public class EntitySpawner : MonoBehaviour {
         Debug.Log(user.Name + " -> " + PureCloud.Instance.ResolvePresenceId(user.Presence.PresenceDefinition.Id).DefaultLabel);
 
         npc.name = user.Name;
+        npc.Find("PlayerName").GetComponent<TextMesh>().text = user.Name;
 
         //var color = PresenceColors.FromSystemPresence(user.Presence.PresenceDefinition.SystemPresence);
         //npc.Find("Hair").GetComponent<Renderer>().material.SetColor("_Color", color);

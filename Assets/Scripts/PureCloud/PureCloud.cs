@@ -24,6 +24,12 @@ namespace Assets.Scripts.PureCloud
         private Dictionary<string, OrganizationPresence> _presences = new Dictionary<string, OrganizationPresence>();
         private OrganizationPresence _offlinePresence;
 
+        public delegate void UserCountChangedDelegate(int userCount);
+        public event UserCountChangedDelegate UserCountChanged;
+
+        public delegate void PresenceCountChangedDelegate(int presenceCount);
+        public event PresenceCountChangedDelegate PresenceCountChanged;
+
         public static PureCloud Instance
         {
             get
@@ -122,28 +128,30 @@ namespace Assets.Scripts.PureCloud
             myWebRequest.SetRequestHeader("Authorization", "bearer " + this.accessToken);
             yield return myWebRequest.SendWebRequest();
 
-            Debug.Log("isHttpError=" + myWebRequest.isHttpError);
-            Debug.Log("isNetworkError=" + myWebRequest.isNetworkError);
-            Debug.Log("text=" + myWebRequest.downloadHandler.text);
-            Debug.Log("data length=" + myWebRequest.downloadHandler.data.Length);
+            if (myWebRequest.isHttpError || myWebRequest.isNetworkError)
+            {
+                Debug.LogError(myWebRequest.error);
+            }
 
 
             var users = JsonConvert.DeserializeObject<UserEntityListing>(myWebRequest.downloadHandler.text);
             this.Users.AddRange(users.Entities);
             Debug.Log("Got " + users.Entities.Count + " users, total: " + this.Users.Count);
+            if (UserCountChanged != null)
+                UserCountChanged(Users.Count);
 
             if (users.PageNumber < users.PageCount)
             {
                 Debug.Log("Getting more users");
                 yield return LoadUsers((int)users.PageNumber + 1);
             }
-            else
-            {
-                foreach (User user in Users)
-                {
-                    Debug.Log("[USER] " + user.Name + " Presence: " + user.Presence);
-                }
-            }
+            //else
+            //{
+            //    foreach (User user in Users)
+            //    {
+            //        Debug.Log("[USER] " + user.Name + " Presence: " + user.Presence);
+            //    }
+            //}
         }
 
         public IEnumerator LoadPresences(int pageNumber = 1)
@@ -161,10 +169,10 @@ namespace Assets.Scripts.PureCloud
             myWebRequest.SetRequestHeader("Authorization", "bearer " + this.accessToken);
             yield return myWebRequest.SendWebRequest();
 
-            Debug.Log("isHttpError=" + myWebRequest.isHttpError);
-            Debug.Log("isNetworkError=" + myWebRequest.isNetworkError);
-            Debug.Log("text=" + myWebRequest.downloadHandler.text);
-            Debug.Log("data length=" + myWebRequest.downloadHandler.data.Length);
+            if (myWebRequest.isHttpError || myWebRequest.isNetworkError)
+            {
+                Debug.LogError(myWebRequest.error);
+            }
 
 
             var presences = JsonConvert.DeserializeObject<OrganizationPresenceEntityListing>(myWebRequest.downloadHandler.text);
@@ -173,6 +181,8 @@ namespace Assets.Scripts.PureCloud
                 Presences.Add(presence.Id, presence);
             }
             Debug.Log("Got " + presences.Entities.Count + " presences, total: " + this.Presences.Count);
+            if (PresenceCountChanged != null)
+                PresenceCountChanged(Presences.Count);
 
             if (presences.PageNumber < presences.PageCount)
             {
@@ -183,7 +193,7 @@ namespace Assets.Scripts.PureCloud
             {
                 foreach (var presence in Presences)
                 {
-                    Debug.Log("[PRESENCE] " + presence.Key + " " + presence.Value.DefaultLabel);
+                    //Debug.Log("[PRESENCE] " + presence.Key + " " + presence.Value.DefaultLabel);
                     if (presence.Value.SystemPresence.ToLowerInvariant() == "offline")
                         _offlinePresence = presence.Value;
                 }

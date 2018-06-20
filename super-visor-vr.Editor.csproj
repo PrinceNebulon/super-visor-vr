@@ -399,6 +399,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Baseball Bats\Documentation\Documentation.txt" />
+    <None Include="Assets\Materials\Depth Text Shader.shader" />
     <None Include="Assets\NatureStarterKit2\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />

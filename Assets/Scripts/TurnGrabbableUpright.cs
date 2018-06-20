@@ -5,6 +5,7 @@ using UnityEngine;
 public class TurnGrabbableUpright : MonoBehaviour
 {
     private GameObject _hand;
+    private int _lastTargetId = -1;
 
 	// Use this for initialization
 	void Start () {
@@ -18,13 +19,25 @@ public class TurnGrabbableUpright : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Transform objectHit = hit.transform;
-            var grabbable = hit.collider.GetComponent<OVRGrabbable>();
-            if (grabbable != null)
+            if (objectHit.GetInstanceID() == _lastTargetId)
             {
-                if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) >= .5)
-                {
-                    hit.transform.rotation = new Quaternion(0, 0, 0, 0);
-                }
+                // Target hasn't changed since it was set
+                Debug.Log("Skipping transform for " + objectHit.name);
+                return;
+            } else
+            {
+                // Landed on something else, clear last target
+                _lastTargetId = -1;
+            }
+
+            var grabbable = hit.collider.GetComponent<OVRGrabbable>();
+            if (grabbable != null && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) >= .5)
+            {
+                // Store last target
+                _lastTargetId = objectHit.GetInstanceID();
+
+                // Set rotation
+                hit.transform.rotation = new Quaternion(0, 0, 0, 0);
             }
         }
 	}
