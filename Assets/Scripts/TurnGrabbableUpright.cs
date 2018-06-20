@@ -37,7 +37,9 @@ public class TurnGrabbableUpright : MonoBehaviour
                 _lastTargetId = objectHit.GetInstanceID();
 
                 // Set rotation
-                hit.transform.rotation = new Quaternion(0, 0, 0, 0);
+                objectHit.rotation = new Quaternion(0, 0, 0, 0);
+                objectHit.LookAt(GameObject.Find("OVRPlayerController").transform);
+                objectHit.rotation = Quaternion.Euler(new Vector3(0, objectHit.rotation.eulerAngles.y - 90, 0));
             }
         }
 	}

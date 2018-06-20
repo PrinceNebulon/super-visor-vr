@@ -12,8 +12,7 @@ public class EntitySpawner : MonoBehaviour {
     public Transform spawnPoint;
     public int spawnMultiplier = 1;
     public int spawnDispersionFactor = 30;
-
-    private PureCloud pureCloud;
+    
     private System.Random random = new System.Random();
 
     // Use this for initialization
@@ -39,25 +38,32 @@ public class EntitySpawner : MonoBehaviour {
 
     private void SpawnUser(int i)
     {
-        Transform npc = Instantiate(boxPrefab);
-        //Debug.Log("[OLD] x:" + spawnPoint.position.x + "y:" + spawnPoint.position.y + "z:" + spawnPoint.position.z);
-        npc.position = new Vector3(
+        // Create new instance of prefab
+        Transform prefab = Instantiate(boxPrefab);
+
+        // Determine starting position relative to the spawn point
+        prefab.position = new Vector3(
             spawnPoint.position.x + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100),
             spawnPoint.position.y,
             spawnPoint.position.z + (random.Next(-100 * spawnDispersionFactor, 100 * spawnDispersionFactor) / (float)100.0));
-        //Debug.Log("[NEW] x:" + t.position.x + "y:" + t.position.y + "z:" + t.position.z);
 
+        // Face a random direction
+        prefab.Rotate(0, random.Next(0, 360), 0);
+
+        // Get PureCloud user
         var user = PureCloud.Instance.Users[i];
         Debug.Log(user.Name + " -> " + PureCloud.Instance.ResolvePresenceId(user.Presence.PresenceDefinition.Id).DefaultLabel);
 
-        npc.name = user.Name;
-        npc.Find("PlayerName").GetComponent<TextMesh>().text = user.Name;
+        // Set prefab name
+        prefab.name = user.Name;
+        prefab.Find("PlayerName").GetComponent<TextMesh>().text = user.Name;
 
         //var color = PresenceColors.FromSystemPresence(user.Presence.PresenceDefinition.SystemPresence);
         //npc.Find("Hair").GetComponent<Renderer>().material.SetColor("_Color", color);
-        npc.Find("Hair").GetComponent<Renderer>().material = LoadPresenceMaterial(user.Presence.PresenceDefinition.SystemPresence);
+        prefab.Find("Hair").GetComponent<Renderer>().material = LoadPresenceMaterial(user.Presence.PresenceDefinition.SystemPresence);
         
-        StartCoroutine(applyFaceTexture(npc, PureCloud.Instance.Users[i].DefaultImage));
+        // Download and apply profile picture
+        StartCoroutine(applyFaceTexture(prefab, PureCloud.Instance.Users[i].DefaultImage));
     }
 
     private Material LoadPresenceMaterial(string systemPresence)
@@ -90,6 +96,7 @@ public class EntitySpawner : MonoBehaviour {
             i = random.Next(0, PureCloud.Instance.Users.Count - 1);
             if (PureCloud.Instance.Users[i].Images == null || PureCloud.Instance.Users[i].Images.Count == 0)
             {
+                // Ignore this user, no picture
                 i = -1;
             }
         }
