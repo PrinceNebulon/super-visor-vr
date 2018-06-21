@@ -12,6 +12,7 @@ public class EntitySpawner : MonoBehaviour {
     public Transform spawnPoint;
     public int spawnMultiplier = 1;
     public int spawnDispersionFactor = 30;
+    public string userId = "";
     
     private System.Random random = new System.Random();
 
@@ -31,7 +32,23 @@ public class EntitySpawner : MonoBehaviour {
         {
             for (var i = 0; i < spawnMultiplier; i++)
             {
-                SpawnUser(GetRandomUserWithPicture());
+                if (String.IsNullOrEmpty(userId))
+                    SpawnUser(GetRandomUserWithPicture());
+                else
+                    SpawnUserById(userId);
+            }
+        }
+    }
+
+    private void SpawnUserById(string id)
+    {
+        for (int i = 0; i < PureCloud.Instance.Users.Count; i++)
+        {
+            var user = PureCloud.Instance.Users[i];
+            if (user.Id == id)
+            {
+                SpawnUser(i);
+                break;
             }
         }
     }

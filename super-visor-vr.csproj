@@ -557,7 +557,6 @@
     <Compile Include="Assets\Scripts\PureCloud\Models\UserEntityListing.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\UserImage.cs" />
     <Compile Include="Assets\Scripts\PureCloud\Models\UserPresence.cs" />
-    <Compile Include="Assets\Scripts\PureCloud\PresenceColors.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloud.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloudInitializer.cs" />
     <Compile Include="Assets\Scripts\PureCloud\PureCloudSettings.cs" />
