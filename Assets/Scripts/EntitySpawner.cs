@@ -6,25 +6,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class EntitySpawner : MonoBehaviour {
-    
+public class EntitySpawner : MonoBehaviour
+{
+
     public Transform boxPrefab;
     public Transform spawnPoint;
     public int spawnMultiplier = 1;
     public int spawnDispersionFactor = 30;
-    public string userId = "";
-    
+    public List<string> userIds = new List<string>();
+
     private System.Random random = new System.Random();
 
+    [NonSerialized]
+    public static int _spawnCount;
+    public static void IncrementSpawnCount()
+    {
+        _spawnCount++;
+        GameObject.Find("SpawnedCount").GetComponent<TextMesh>().text = _spawnCount.ToString();
+    }
+
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         //Debug.Log("Update method");
-	}
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -32,10 +43,17 @@ public class EntitySpawner : MonoBehaviour {
         {
             for (var i = 0; i < spawnMultiplier; i++)
             {
-                if (String.IsNullOrEmpty(userId))
+                if (userIds.Count == 0)
+                {
                     SpawnUser(GetRandomUserWithPicture());
+                }
                 else
-                    SpawnUserById(userId);
+                {
+                    foreach (var userId in userIds)
+                    {
+                        SpawnUserById(userId);
+                    }
+                }
             }
         }
     }
@@ -78,9 +96,11 @@ public class EntitySpawner : MonoBehaviour {
         //var color = PresenceColors.FromSystemPresence(user.Presence.PresenceDefinition.SystemPresence);
         //npc.Find("Hair").GetComponent<Renderer>().material.SetColor("_Color", color);
         prefab.Find("Hair").GetComponent<Renderer>().material = LoadPresenceMaterial(user.Presence.PresenceDefinition.SystemPresence);
-        
+
         // Download and apply profile picture
         StartCoroutine(applyFaceTexture(prefab, PureCloud.Instance.Users[i].DefaultImage));
+
+        IncrementSpawnCount();
     }
 
     private Material LoadPresenceMaterial(string systemPresence)

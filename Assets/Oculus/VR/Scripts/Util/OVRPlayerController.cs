@@ -32,11 +32,12 @@ public class OVRPlayerController : MonoBehaviour
 	/// The rate acceleration during movement.
 	/// </summary>
 	public float Acceleration = 0.1f;
+    public float RunMultiplier = 2.0f;
 
-	/// <summary>
-	/// The rate of damping on movement.
-	/// </summary>
-	public float Damping = 0.3f;
+    /// <summary>
+    /// The rate of damping on movement.
+    /// </summary>
+    public float Damping = 0.3f;
 
 	/// <summary>
 	/// The rate of additional damping when moving sideways or backwards.
@@ -143,7 +144,7 @@ public class OVRPlayerController : MonoBehaviour
 	private OVRPose? InitialPose;
 	public float InitialYRotation { get; private set; }
 	private float MoveScaleMultiplier = 1.0f;
-	private float RotationScaleMultiplier = 1.0f;
+    private float RotationScaleMultiplier = 1.0f;
 	private bool  SkipMouseRotation = true; // It is rare to want to use mouse movement in VR, so ignore the mouse by default.
 	private bool  HaltUpdateMovement = false;
 	private bool prevHatLeft = false;
@@ -344,9 +345,9 @@ public class OVRPlayerController : MonoBehaviour
 
 			// Run!
 			if (dpad_move || Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-				moveInfluence *= 2.0f;
+                moveInfluence *= RunMultiplier;
 
-			Quaternion ort = transform.rotation;
+            Quaternion ort = transform.rotation;
 			Vector3 ortEuler = ort.eulerAngles;
 			ortEuler.z = ortEuler.x = 0f;
 			ort = Quaternion.Euler(ortEuler);
@@ -365,7 +366,7 @@ public class OVRPlayerController : MonoBehaviour
 			moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
 
 #if !UNITY_ANDROID // LeftTrigger not avail on Android game pad
-			moveInfluence *= 1.0f + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
+			moveInfluence *= 1.0f + (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) * RunMultiplier);
 #endif
 
 			Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);

@@ -304,6 +304,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\BlockyCustomCharacter\DemoAnimationScript.cs" />
+    <Compile Include="Assets\LaserPointerController.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Antialiasing.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs" />
     <Compile Include="Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\BloomAndFlares.cs" />
@@ -563,6 +564,7 @@
     <Compile Include="Assets\Scripts\PureCloud\UpgradeSdkEnumConverter.cs" />
     <Compile Include="Assets\Scripts\TurnGrabbableUpright.cs" />
     <Compile Include="Assets\Scripts\UiButtonTest.cs" />
+    <Compile Include="Assets\TimeOfDayController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Baseball Bats\Documentation\Documentation.txt" />
